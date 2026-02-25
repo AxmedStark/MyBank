@@ -1,4 +1,9 @@
 package com.example.mybank
 
-class Transaction {
-}
+data class Transaction(
+    val id: Int,
+    val title: String,
+    val amount: String,
+    val date: String,
+    val iconRes: Int
+)
