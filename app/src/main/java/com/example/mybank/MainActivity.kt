@@ -2,6 +2,7 @@ package com.example.mybank
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.example.mybank.BuildConfig.BASE_URL
 class MainActivity : AppCompatActivity() {
 
     val TAG = "LifecycleCheck"
+    private var clickCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,10 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         if (BuildConfig.DEBUG) Log.d("BASE_URL_CHECK", "BASE_URL: $BASE_URL")
 
-        // 1. Находим наш RecyclerView в макете
         val recyclerView: RecyclerView = findViewById(R.id.rvTransactions)
 
-        // 2. Создаем список транзакций (Имитация данных с сервера)
         val transactionList = listOf(
             Transaction(1, "Netflix Subscription", "- $12.99", "Today, 10:00", 0),
             Transaction(2, "Salary", "+ $2,500.00", "Yesterday, 18:30", 0),
@@ -33,16 +33,13 @@ class MainActivity : AppCompatActivity() {
             Transaction(8, "Cinema", "- $20.00", "18 Feb, 20:00", 0)
         )
 
-        // 3. Создаем адаптер и передаем туда данные
-        val adapter = TransactionAdapter(transactionList)
+        val adapter = TransactionAdapter(transactionList){ transaction ->
+            Toast.makeText(this, "Clicked: ${transaction.title}", Toast.LENGTH_SHORT).show()
+        }
 
-        // 4. Настраиваем RecyclerView
-        // LayoutManager отвечает за то, КАК располагать элементы (вертикальный список)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Подключаем адаптер
         recyclerView.adapter = adapter
-
     }
 
     override fun onStart() {
