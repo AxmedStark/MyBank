@@ -1,4 +1,4 @@
-package com.example.mybank // Убедись, что пакет твой
+package com.example.mybank
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class TransactionAdapter(private val transactions: List<Transaction>) :
-    RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
+class TransactionAdapter(
+    private val transactions: List<Transaction>,
+    private val onTransactionClick: (Transaction) -> Unit
+) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
     class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.tvTitle)
@@ -21,7 +23,6 @@ class TransactionAdapter(private val transactions: List<Transaction>) :
         return TransactionViewHolder(view)
     }
 
-    // ВАЖНО: Связываем данные
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
         val transaction = transactions[position]
 
@@ -29,15 +30,17 @@ class TransactionAdapter(private val transactions: List<Transaction>) :
         holder.amount.text = transaction.amount
         holder.date.text = transaction.date
 
-        // Маленький бонус: красим сумму. Если минус — красный, если плюс — зеленый.
         if (transaction.amount.contains("-")) {
             holder.amount.setTextColor(android.graphics.Color.RED)
         } else {
-            holder.amount.setTextColor(android.graphics.Color.GREEN) // Или цвет по умолчанию
+            holder.amount.setTextColor(android.graphics.Color.GREEN)
+        }
+
+        holder.itemView.setOnClickListener {
+            onTransactionClick(transaction)
         }
     }
 
-    // ВАЖНО: Говорим, сколько элементов
     override fun getItemCount(): Int {
         return transactions.size
     }
